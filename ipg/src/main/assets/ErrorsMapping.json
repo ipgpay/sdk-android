@@ -1,0 +1,34 @@
+[
+  {
+    "ErrorCode":1,
+    "ErrorMessage":""
+  },
+  {
+    "ErrorCode":2,
+    "ErrorMessage":""
+  },
+  {
+    "ErrorCode":4,
+    "ErrorMessage":""
+  },
+  {
+    "ErrorCode":8,
+    "ErrorMessage":""
+  },
+  {
+    "ErrorCode":16,
+    "ErrorMessage":""
+  },
+  {
+    "ErrorCode":32,
+    "ErrorMessage":""
+  },
+  {
+    "ErrorCode":64,
+    "ErrorMessage":""
+  },
+  {
+    "ErrorCode":128,
+    "ErrorMessage":""
+  }
+]
