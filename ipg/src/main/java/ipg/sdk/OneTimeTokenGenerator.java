@@ -1,25 +1,10 @@
 package ipg.sdk;
 
-import android.renderscript.ScriptGroup;
-
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.StringReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import ipg.sdk.handlers.ResponseHandler;
 import ipg.sdk.models.EncryptedData;
 import ipg.sdk.models.Options;
 import ipg.sdk.models.PaddedData;
 import ipg.sdk.models.Payload;
-import ipg.sdk.utility.HttpUtility;
 
 /**
  * IPG
@@ -32,6 +17,7 @@ import ipg.sdk.utility.HttpUtility;
 public class OneTimeTokenGenerator {
     private String mServiceAuthKey;
     private String mTokenServiceURL;
+    private ErrorGenerator errorGenerator = new ErrorGenerator();
 
     public OneTimeTokenGenerator(String serviceAuthKey, String tokenServiceURL) {
         this.mServiceAuthKey = serviceAuthKey;
@@ -46,17 +32,24 @@ public class OneTimeTokenGenerator {
     public void getPayload(Options options, final ResponseHandler responseHandler) {
         int code = validate(options);
         Payload responsePayload = null;
-        if (code != 0) {
-
-        } else {
-            final PaddedData padded;
-            padded = getPaddedData(options.getCcPan(), options.getCcCvv(), options.getCcExpMonth(), options.getCcExpYear());
-            new Thread() {
-                @Override
-                public void run() {
-                    getTokenServiceResponse(padded, responseHandler);
+        try {
+            if (code != 0) {
+                return;
+            } else {
+                final PaddedData padded;
+                padded = getPaddedData(options.getCcPan(), options.getCcCvv(), options.getCcExpMonth(), options.getCcExpYear());
+                if (padded != null) {
+                    new GetTokenServiceThread(padded, mTokenServiceURL, mServiceAuthKey, errorGenerator, responseHandler).start();
+                } else {
+                    code += ErrorCode.invalidInput.getValue();
+                    return;
                 }
-            }.start();
+            }
+        } finally {
+            if (code != 0) {
+                responsePayload = new Payload(errorGenerator.generateErrors(code));
+                responseHandler.handle(responsePayload);
+            }
         }
     }
 
@@ -84,28 +77,32 @@ public class OneTimeTokenGenerator {
     /// - Returns: The encrypted data.
     /// - Throws: throws encrypt exeption.
     private PaddedData getPaddedData(String ccPan, String ccCvv, String ccExpmonth, String ccExpyear) {
-        String cc_pan_bin = ccPan.substring(0, 6);
-        String cc_pan_last4 = ccPan.substring(ccPan.length() - 4);
-        String cc_pan_remainder = ccPan.substring(6);
-        StringBuilder pad = new StringBuilder("");
+        try {
+            String cc_pan_bin = ccPan.substring(0, 6);
+            String cc_pan_last4 = ccPan.substring(ccPan.length() - 4);
+            String cc_pan_remainder = ccPan.substring(6);
+            StringBuilder pad = new StringBuilder("");
 
-        EncryptedData cvvEncrypted = getEncrypted(ccCvv);
-        pad.append(cvvEncrypted.getPad());
-        String cc_cvv = cvvEncrypted.getValue();
+            EncryptedData cvvEncrypted = getEncrypted(ccCvv);
+            pad.append(cvvEncrypted.getPad());
+            String cc_cvv = cvvEncrypted.getValue();
 
-        EncryptedData expMonthEncrypted = getEncrypted(ccExpmonth);
-        pad.append(expMonthEncrypted.getPad());
-        String cc_exp_month = expMonthEncrypted.getValue();
+            EncryptedData expMonthEncrypted = getEncrypted(ccExpmonth);
+            pad.append(expMonthEncrypted.getPad());
+            String cc_exp_month = expMonthEncrypted.getValue();
 
-        EncryptedData expYearEncrypted = getEncrypted(ccExpyear);
-        pad.append(expYearEncrypted.getPad());
-        String cc_exp_year = expYearEncrypted.getValue();
+            EncryptedData expYearEncrypted = getEncrypted(ccExpyear);
+            pad.append(expYearEncrypted.getPad());
+            String cc_exp_year = expYearEncrypted.getValue();
 
-        EncryptedData ccRemainEncrypted = getEncrypted(ccCvv);
-        pad.append(ccRemainEncrypted.getPad());
-        cc_pan_remainder = ccRemainEncrypted.getValue();
+            EncryptedData ccRemainEncrypted = getEncrypted(ccCvv);
+            pad.append(ccRemainEncrypted.getPad());
+            cc_pan_remainder = ccRemainEncrypted.getValue();
 
-        return new PaddedData(cc_cvv, cc_exp_month, cc_exp_year, cc_pan_remainder, pad.toString(), cc_pan_bin, cc_pan_last4);
+            return new PaddedData(cc_cvv, cc_exp_month, cc_exp_year, cc_pan_remainder, pad.toString(), cc_pan_bin, cc_pan_last4);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     /// Get encrypted data of the string.
@@ -116,7 +113,7 @@ public class OneTimeTokenGenerator {
     private EncryptedData getEncrypted(String value) {
         // Encryption method to encrypt input string
         if (!InputsValidate.isValidInteger(value)) {
-            throw new Error(String.valueOf(ErrorCode.invalidInput.getValue()));
+            throw new java.lang.Error(String.valueOf(ErrorCode.invalidInput.getValue()));
         }
         String newVal = "";
         String pad = "";
@@ -127,47 +124,5 @@ public class OneTimeTokenGenerator {
             newVal += (Integer.parseInt(String.valueOf(digit)) + padNum) % 10;
         }
         return new EncryptedData(pad, newVal);
-    }
-
-    /// Get response from the token service.
-    ///
-    /// - Parameters:
-    ///   - paddedData: Padded data contains all the fields we need for the token service, must be the encrypted data.
-    ///   - responseHandler: A callback function for the client to handle the response object.
-    private void getTokenServiceResponse(PaddedData paddedData, ResponseHandler responseHandler) {
-        URL url = null;
-        try {
-            url = new URL(mTokenServiceURL);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("POST");
-            conn.setDoOutput(true);
-            conn.setDoInput(true);
-            conn.setRequestProperty("action", "NETWORK_POST_KEY_VALUE");
-            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            OutputStream os = conn.getOutputStream();
-            byte[] requestBody = HttpUtility.buildParamsString(paddedData.toMap()).getBytes("UTF-8");
-            os.write(requestBody);
-            os.flush();
-            os.close();
-            if (conn.getResponseCode() == 200) {
-                InputStream is = conn.getInputStream();
-                BufferedReader buffer = new BufferedReader(new InputStreamReader(is));
-                StringBuilder response = new StringBuilder();
-                String line = null;
-                while ((line = buffer.readLine()) != null) {
-                    response.append(line);
-                }
-                JSONObject responseObj = new JSONObject(response.toString());
-                responseHandler.handle(new Payload("1" + responseObj.get("token") + paddedData.getPad(), paddedData.getCc_pan_bin(), paddedData.getCc_pan_last4(), null));
-            } else {
-
-            }
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }

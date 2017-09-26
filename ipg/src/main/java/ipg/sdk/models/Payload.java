@@ -7,9 +7,9 @@ import java.util.List;
  */
 
 public class Payload {
-    private String payload;
-    private String ccPanBin;
-    private String ccPanLast4;
+    private String payload = null;
+    private String ccPanBin = null;
+    private String ccPanLast4 = null;
     private Error[] errors;
 
     public String getPayload() {
@@ -32,6 +32,10 @@ public class Payload {
         this.payload = payload;
         this.ccPanBin = ccPanBin;
         this.ccPanLast4 = ccPanLast4;
+        this.errors = errors;
+    }
+
+    public Payload(Error[] errors) {
         this.errors = errors;
     }
 }

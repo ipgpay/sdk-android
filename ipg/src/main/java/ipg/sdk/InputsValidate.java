@@ -1,5 +1,6 @@
 package ipg.sdk;
 
+import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -9,7 +10,7 @@ import java.util.regex.Pattern;
  * Copyright © 2017 Victor CC. All rights reserved.
  */
 
-public class InputsValidate {
+class InputsValidate {
     private static final String CVV_VALIDATE_PATTERN = "^[0-9]{3,4}$";
     private static final String NUMBER_VALIDATE_PATTERN = "^\\+?([0-9]\\d*)$";
     private static final String EXPYEAR_VALIDATE_PATTERN = "^[0-9]{2}$";
@@ -57,7 +58,18 @@ public class InputsValidate {
     public static boolean isValidExpiryDate(String expYear, String expMonth) {
         if (validate(EXPYEAR_VALIDATE_PATTERN, expYear)) {
             if (validate(EXPMONTH_VALIDATE_PATTERN, expMonth)) {
-                return true;
+                Calendar currentDate = Calendar.getInstance();
+                int currentYear = currentDate.get(Calendar.YEAR);
+                int currentMonth = currentDate.get(Calendar.MONTH) + 1;
+                if ((Integer.parseInt(expYear) + 2000) <= currentYear) {
+                    if (Integer.parseInt(expMonth) <= currentMonth) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                } else {
+                    return false;
+                }
             } else {
                 return false;
             }
@@ -71,16 +83,20 @@ public class InputsValidate {
     /// - Parameter input: The string needs to be checked, this should be the credit card number.
     /// - Returns: Returns true if the input string is valid, false otherwise.
     public static boolean isValidLuhn(String input) {
-        input = input.trim();
-        int sum = 0;
-        int numdigits = input.length();
-        int parity = numdigits % 2;
-        for (int i = 0; i < numdigits; i++) {
-            int digit = Integer.parseInt(String.valueOf(input.charAt(i)));
-            if (i % 2 == parity) digit *= 2;
-            if (digit > 9) digit -= 9;
-            sum += digit;
+        if (isValidInteger(input)) {
+            input = input.trim();
+            int sum = 0;
+            int numdigits = input.length();
+            int parity = numdigits % 2;
+            for (int i = 0; i < numdigits; i++) {
+                int digit = Integer.parseInt(String.valueOf(input.charAt(i)));
+                if (i % 2 == parity) digit *= 2;
+                if (digit > 9) digit -= 9;
+                sum += digit;
+            }
+            return ((sum != 0) && (sum % 10) == 0);
+        } else {
+            return false;
         }
-        return ((sum != 0) && (sum % 10) == 0);
     }
 }
