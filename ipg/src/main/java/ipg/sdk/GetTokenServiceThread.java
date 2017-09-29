@@ -21,26 +21,26 @@ import ipg.sdk.utility.HttpUtility;
  */
 
 class GetTokenServiceThread extends Thread {
-    private PaddedData mPaddedData;
-    private String mServiceAuthKey;
-    private String mTokenServiceURL;
-    private ErrorGenerator mErrorGenerator;
-    private ResponseHandler mResponseHandler;
+    private PaddedData paddedData;
+    private String serviceAuthKey;
+    private String tokenServiceURL;
+    private ErrorGenerator errorGenerator;
+    private ResponseHandler responseHandler;
 
     public GetTokenServiceThread(PaddedData paddedData, String tokenServiceURL, String serviceAuthKey, ErrorGenerator errorGenerator, ResponseHandler responseHandler) {
         super();
-        this.mPaddedData = paddedData;
-        this.mServiceAuthKey = serviceAuthKey;
-        this.mTokenServiceURL = tokenServiceURL;
-        this.mErrorGenerator = errorGenerator;
-        this.mResponseHandler = responseHandler;
+        this.paddedData = paddedData;
+        this.serviceAuthKey = serviceAuthKey;
+        this.tokenServiceURL = tokenServiceURL;
+        this.errorGenerator = errorGenerator;
+        this.responseHandler = responseHandler;
     }
 
     @Override
     public void run() {
         Payload responsePayload = null;
         responsePayload = getTokenServiceResponse();
-        mResponseHandler.handle(responsePayload);
+        this.responseHandler.handle(responsePayload);
     }
 
     /// Get response from the token service.
@@ -50,11 +50,11 @@ class GetTokenServiceThread extends Thread {
     ///   - responseHandler: A callback function for the client to handle the response object.
     private Payload getTokenServiceResponse() {
         URL url = null;
-        PaddedData paddedData = mPaddedData;
+        PaddedData paddedData = this.paddedData;
         int errorCode = 0;
         Payload payload = null;
         try {
-            url = new URL(mTokenServiceURL);
+            url = new URL(this.tokenServiceURL);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             conn.setDoOutput(true);
@@ -90,7 +90,7 @@ class GetTokenServiceThread extends Thread {
             e.printStackTrace();
         } finally {
             if (errorCode != 0) {
-                Error[] errors = mErrorGenerator.generateErrors(errorCode);
+                Error[] errors = this.errorGenerator.generateErrors(errorCode);
                 payload = new Payload(errors);
             }
         }

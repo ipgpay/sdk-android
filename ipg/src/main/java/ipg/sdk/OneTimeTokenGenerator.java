@@ -15,13 +15,13 @@ import ipg.sdk.models.Payload;
 /// The data include encrypted credit card details.
 
 public class OneTimeTokenGenerator {
-    private String mServiceAuthKey;
-    private String mTokenServiceURL;
-    private ErrorGenerator errorGenerator = new ErrorGenerator();
+    private String serviceAuthKey;
+    private String tokenServiceURL;
+    private ErrorGenerator mErrorGenerator = new ErrorGenerator();
 
     public OneTimeTokenGenerator(String serviceAuthKey, String tokenServiceURL) {
-        this.mServiceAuthKey = serviceAuthKey;
-        this.mTokenServiceURL = tokenServiceURL;
+        this.serviceAuthKey = serviceAuthKey;
+        this.tokenServiceURL = tokenServiceURL;
     }
 
     /// Method to generate payload with API method.
@@ -39,7 +39,7 @@ public class OneTimeTokenGenerator {
                 final PaddedData padded;
                 padded = getPaddedData(options.getCcPan(), options.getCcCvv(), options.getCcExpMonth(), options.getCcExpYear());
                 if (padded != null) {
-                    new GetTokenServiceThread(padded, mTokenServiceURL, mServiceAuthKey, errorGenerator, responseHandler).start();
+                    new GetTokenServiceThread(padded, this.tokenServiceURL, this.serviceAuthKey, mErrorGenerator, responseHandler).start();
                 } else {
                     code += ErrorCode.invalidInput.getValue();
                     return;
@@ -47,7 +47,7 @@ public class OneTimeTokenGenerator {
             }
         } finally {
             if (code != 0) {
-                responsePayload = new Payload(errorGenerator.generateErrors(code));
+                responsePayload = new Payload(mErrorGenerator.generateErrors(code));
                 responseHandler.handle(responsePayload);
             }
         }

@@ -61,7 +61,10 @@ class InputsValidate {
                 Calendar currentDate = Calendar.getInstance();
                 int currentYear = currentDate.get(Calendar.YEAR);
                 int currentMonth = currentDate.get(Calendar.MONTH) + 1;
-                if ((Integer.parseInt(expYear) + 2000) <= currentYear) {
+                int expFullYear = (Integer.parseInt(expYear) + 2000);
+                if (expFullYear > currentYear) {
+                    return true;
+                } else if (expFullYear == currentYear) {
                     if (Integer.parseInt(expMonth) <= currentMonth) {
                         return true;
                     } else {
