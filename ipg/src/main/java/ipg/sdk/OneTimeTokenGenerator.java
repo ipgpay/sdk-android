@@ -95,7 +95,7 @@ public class OneTimeTokenGenerator {
             pad.append(expYearEncrypted.getPad());
             String cc_exp_year = expYearEncrypted.getValue();
 
-            EncryptedData ccRemainEncrypted = getEncrypted(ccCvv);
+            EncryptedData ccRemainEncrypted = getEncrypted(cc_pan_remainder);
             pad.append(ccRemainEncrypted.getPad());
             cc_pan_remainder = ccRemainEncrypted.getValue();
 

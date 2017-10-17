@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Map;
 
 import ipg.sdk.handlers.ResponseHandler;
 import ipg.sdk.models.Error;
@@ -62,7 +63,9 @@ class GetTokenServiceThread extends Thread {
             conn.setRequestProperty("action", "NETWORK_POST_KEY_VALUE");
             conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             OutputStream os = conn.getOutputStream();
-            byte[] requestBody = HttpUtility.buildParamsString(paddedData.toMap()).getBytes("UTF-8");
+            Map<String, String> dataMap = paddedData.toMap();
+            dataMap.put("auth_key", this.serviceAuthKey);
+            byte[] requestBody = HttpUtility.buildParamsString(dataMap).getBytes("UTF-8");
             os.write(requestBody);
             os.flush();
             os.close();

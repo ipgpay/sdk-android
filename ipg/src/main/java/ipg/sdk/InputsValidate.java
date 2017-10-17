@@ -65,7 +65,7 @@ class InputsValidate {
                 if (expFullYear > currentYear) {
                     return true;
                 } else if (expFullYear == currentYear) {
-                    if (Integer.parseInt(expMonth) <= currentMonth) {
+                    if (currentMonth <= Integer.parseInt(expMonth)) {
                         return true;
                     } else {
                         return false;
