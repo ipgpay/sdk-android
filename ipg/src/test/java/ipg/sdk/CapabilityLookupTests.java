@@ -12,9 +12,14 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 /**
- * Created by che19 on 2017/9/29.
+ * IPG
+ * Created by Victor CC on 2017/9/29.
+ * Copyright © 2017 Victor CC. All rights reserved.
  */
 
+
+
+//Capability unit test
 public class CapabilityLookupTests {
     @Test
     public void get_Capabilities_Successful() {

@@ -3,7 +3,9 @@ package ipg.sdk.models;
 import java.util.ArrayList;
 
 /**
- * Created by che19 on 2017/9/27.
+ * IPG
+ * Created by Victor CC on 2017/9/27.
+ * Copyright © 2017 Victor CC. All rights reserved.
  */
 
 public class Currency {

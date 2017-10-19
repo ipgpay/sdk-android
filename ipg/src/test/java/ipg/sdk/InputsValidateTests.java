@@ -5,7 +5,9 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 /**
- * Created by che19 on 2017/9/29.
+ * IPG
+ * Created by Victor CC on 2017/9/29.
+ * Copyright © 2017 Victor CC. All rights reserved.
  */
 
 public class InputsValidateTests {

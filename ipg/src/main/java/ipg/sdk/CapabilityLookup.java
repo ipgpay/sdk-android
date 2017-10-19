@@ -3,8 +3,12 @@ package ipg.sdk;
 import ipg.sdk.handlers.ResponseHandler;
 
 /**
- * Created by che19 on 2017/9/28.
+ * IPG
+ * Created by Victor CC on 2017/9/28.
+ * Copyright © 2017 Victor CC. All rights reserved.
  */
+
+
 
 public class CapabilityLookup {
     private String authKey;

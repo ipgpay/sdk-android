@@ -1,9 +1,13 @@
 package ipg.sdk;
 
 /**
- * Created by che19 on 2017/9/25.
+ * IPG
+ * Created by Victor CC on 2017/9/25.
+ * Copyright © 2017 Victor CC. All rights reserved.
  */
 
+
+//Errors json data string
 class ErrorConfig {
     public static final String ErrorMapping = "" +
             "[\n" +

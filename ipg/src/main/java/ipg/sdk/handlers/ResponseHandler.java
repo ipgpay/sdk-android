@@ -1,9 +1,12 @@
 package ipg.sdk.handlers;
 
 /**
- * Created by che19 on 2017/9/21.
+ * IPG
+ * Created by Victor CC on 2017/9/21.
+ * Copyright © 2017 Victor CC. All rights reserved.
  */
 
+//Call back handler
 public interface ResponseHandler<T> {
     public void handle(T handleObject);
 }

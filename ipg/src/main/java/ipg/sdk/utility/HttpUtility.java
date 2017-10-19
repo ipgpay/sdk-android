@@ -1,12 +1,15 @@
 package ipg.sdk.utility;
 
 import java.io.UnsupportedEncodingException;
-import java.util.Hashtable;
 import java.util.Map;
 
 /**
- * Created by che19 on 2017/9/21.
+ * IPG
+ * Created by Victor CC on 2017/9/21.
+ * Copyright © 2017 Victor CC. All rights reserved.
  */
+
+
 
 public class HttpUtility {
 

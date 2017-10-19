@@ -1,1 +1,1 @@
-include ':ipg', ':app'
+include ':ipg'

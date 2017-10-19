@@ -9,8 +9,12 @@ import java.util.ArrayList;
 import ipg.sdk.models.Error;
 
 /**
- * Created by che19 on 2017/9/25.
+ * IPG
+ * Created by Victor CC on 2017/9/25.
+ * Copyright © 2017 Victor CC. All rights reserved.
  */
+
+
 
 class ErrorGenerator {
     public Error[] generateErrors(int code) {
