@@ -1,0 +1,34 @@
+[
+  {
+    "ErrorCode": 1,
+    "ErrorMessage": "Credit card number is invalid."
+  },
+  {
+    "ErrorCode": 2,
+    "ErrorMessage": "CVV is invalid."
+  },
+  {
+    "ErrorCode": 4,
+    "ErrorMessage": "Expiry date is invalid."
+  },
+  {
+    "ErrorCode": 8,
+    "ErrorMessage": "Invalid Input (positive number expected)."
+  },
+  {
+    "ErrorCode": 16,
+    "ErrorMessage": "Communications failure. Server returned an empty response."
+  },
+  {
+    "ErrorCode": 32,
+    "ErrorMessage": "Communications failure. Response from server could not be parsed."
+  },
+  {
+    "ErrorCode": 64,
+    "ErrorMessage": "Communications failure. Failed to establish communications."
+  },
+  {
+    "ErrorCode": 128,
+    "ErrorMessage": "Communications failure. Unexpected response."
+  }
+]
