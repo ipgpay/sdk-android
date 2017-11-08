@@ -17,10 +17,11 @@ import ipg.sdk.models.PaddedData;
 import ipg.sdk.models.Payload;
 import ipg.sdk.utility.HttpUtility;
 
-/**
- * IPG
- * Created by Victor CC on 2017/09/26.
- * Copyright © 2017 Victor CC. All rights reserved.
+/*
+ * Copyright (c) 2017 IPG Group Limited
+ * All rights reserved.
+ * This software may be modified and distributed under the terms
+ * of the MIT license.  See the LICENSE.txt file for details.
  */
 
 

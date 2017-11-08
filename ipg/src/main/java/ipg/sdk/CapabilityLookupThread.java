@@ -13,10 +13,11 @@ import ipg.sdk.handlers.ResponseHandler;
 import ipg.sdk.models.Currency;
 import ipg.sdk.models.Payment;
 
-/**
- * IPG
- * Created by Victor CC on 2017/9/27.
- * Copyright © 2017 Victor CC. All rights reserved.
+/*
+ * Copyright (c) 2017 IPG Group Limited
+ * All rights reserved.
+ * This software may be modified and distributed under the terms
+ * of the MIT license.  See the LICENSE.txt file for details.
  */
 
 
